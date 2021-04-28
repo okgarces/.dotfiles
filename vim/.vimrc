@@ -91,7 +91,7 @@ nnoremap <Leader>rp :resize 100<CR>
 nnoremap <Leader>swt :split <bar> :vsplit <bar> :wincmd j <bar> :split <bar> :terminal <CR> :wincmd j <bar> :q! <bar> :resize 10 <CR>
 
 "FZF plugin
-nnoremap <C-p> :GFiles --others<CR>
+nnoremap <C-p> :GFiles  --cached --exclude-standard --others<CR>
 let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8 } }
 
 "CoC mapping
