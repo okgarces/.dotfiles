@@ -28,6 +28,7 @@ Plug 'gruvbox-community/gruvbox'
 Plug 'mbbill/undotree'
 "Plug 'sheerun/vim-polyglot'
 Plug 'itchyny/lightline.vim'
+Plug 'airblade/vim-gitgutter'
 
 " Just testing
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
@@ -153,6 +154,11 @@ for _, lsp in ipairs(servers) do
 end
 EOF
 """"""""""""""""" End LUA LSP """"""""""""
+
+" Git Gutter Options
+set updatetime=100
+
+
 
 "CoC mapping
 "nmap <leader>gd <Plug>(coc-definition)
