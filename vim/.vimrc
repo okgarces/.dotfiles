@@ -1,6 +1,6 @@
 syntax on
 
-set colorcolumn=120
+set colorcolumn=140
 set expandtab
 set incsearch
 set nobackup
@@ -8,10 +8,14 @@ set noerrorbells
 set noswapfile
 set nowrap
 set nu
-set shiftwidth=4
+" Old settings
+" set shiftwidth=4
+" set tabstop=4 softtabstop=4 expandtab
+" Java and Typescript Settings
+set shiftwidth=2
+set tabstop=2 softtabstop=2 expandtab
 set smartcase
 set smartindent
-set tabstop=4 softtabstop=4 expandtab
 set undodir=/Users/ogarces/.vim/undodir
 set undofile
 set relativenumber
@@ -39,6 +43,9 @@ Plug 'hrsh7th/nvim-compe'
 Plug 'nvim-lua/popup.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
+" For Java
+Plug 'mfussenegger/nvim-jdtls'
+Plug 'vim-syntastic/syntastic'
 call plug#end()
 
 colorscheme gruvbox
@@ -97,10 +104,17 @@ nnoremap <leader>l :wincmd l<CR>
 nnoremap <leader>u :UndotreeShow<CR>
 nnoremap <leader>pv :wincmd v<bar> :Ex <bar> :vertical resize 30<CR>
 nnoremap <Leader>rp :resize 100<CR>
+nnoremap <Leader>pf :vertical resize<CR>
+nnoremap <Leader>+ :vertical resize +10<CR>
+nnoremap <Leader>- :vertical resize -10<CR>
 
 "(S)plit (W)ith (T)erminal
 "Split and have a terminal in bottom position
 nnoremap <Leader>swt :split <bar> :vsplit <bar> :wincmd j <bar> :split <bar> :terminal <CR> :wincmd j <bar> :q! <bar> :resize 10 <CR>
+
+"(S)plit (W)ith (T)abs
+"Split and have a terminal in bottom position
+nnoremap <Leader>swT <bar> :tabnew <CR>
 
 "FZF plugin
 "nnoremap <C-p> :GFiles  --cached --exclude-standard --others<CR>
@@ -129,20 +143,22 @@ local on_attach = function(client, bufnr)
   local opts = { noremap=true, silent=true }
 
   -- See `:help vim.lsp.*` for documentation on any of the below functions
-  buf_set_keymap('n', 'gD', '<Cmd>lua vim.lsp.buf.declaration()<CR>', opts)
-  buf_set_keymap('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', opts)
-  buf_set_keymap('n', 'K', '<Cmd>lua vim.lsp.buf.hover()<CR>', opts)
+  buf_set_keymap('n', 'gD', '<cmd>lua vim.lsp.buf.declaration()<CR>', opts)
+  -- buf_set_keymap('n', 'gd', '<cmd>lua vim.lsp.buf.definition()<CR>', opts)
+  buf_set_keymap('n', 'gd', '<cmd> Telescope lsp_definitions <CR>', opts)
+  buf_set_keymap('n', 'K', '<cmd>lua vim.lsp.buf.hover()<CR>', opts)
   buf_set_keymap('n', 'gi', '<cmd>lua vim.lsp.buf.implementation()<CR>', opts)
   buf_set_keymap('n', '<C-k>', '<cmd>lua vim.lsp.buf.signature_help()<CR>', opts)
   buf_set_keymap('n', '<leader>e', '<cmd>lua vim.lsp.diagnostic.show_line_diagnostics()<CR>', opts)
   buf_set_keymap('n', '[d', '<cmd>lua vim.lsp.diagnostic.goto_prev()<CR>', opts)
   buf_set_keymap('n', ']d', '<cmd>lua vim.lsp.diagnostic.goto_next()<CR>', opts)
   buf_set_keymap('n', '<leader>q', '<cmd>lua vim.lsp.diagnostic.set_loclist()<CR>', opts)
-  buf_set_keymap("n", "<leader>f", "<cmd>lua vim.lsp.buf.formatting()<CR>", opts)
+  buf_set_keymap('n', '<leader>f', '<cmd>lua vim.lsp.buf.formatting()<CR>', opts)
 end
 
 -- Use a loop to conveniently call 'setup' on multiple servers and
 -- map buffer local keybindings when the language server attaches
+
 local servers = { "pyright", "tsserver" }
 for _, lsp in ipairs(servers) do
   nvim_lsp[lsp].setup {
@@ -152,12 +168,115 @@ for _, lsp in ipairs(servers) do
     }
   }
 end
+
+-- Treesitter configs, add more languages when needed
+require'nvim-treesitter.configs'.setup {
+  ensure_installed = {"java"}, -- one of "all", "maintained" (parsers with maintainers), or a list of languages
+  highlight = {
+    enable = true,              -- false will disable the whole extension
+  },
+}
+
+-- Telescope settings to open definitions in a vsplit
+require("telescope").setup {
+  pickers = {
+      lsp_definitions = {
+          jump_type = 'vsplit'
+      }
+  }
+}
+
+-- Formatter for java
+require('formatter').setup({
+  filetype = {
+    java = {
+      -- google java formatter
+      function()
+        return {
+          exe = "java -jar /Users/ogarces/dev/google-java-format/google-java-format-1.11.0-all-deps.jar",
+          args = {"--replace", vim.api.nvim_buf_get_name(0)},
+          stdin = false
+        }
+      end
+    },
+  }
+})
+
+local signs = { Error = '❌', Warning = '❕', Hint = '❔', Information = 'ℹ️ ' }
+
+for type, icon in pairs(signs) do
+  local hl = "LspDiagnosticsSign" .. type
+  vim.fn.sign_define(hl, { text = icon, texthl = hl, numhl = hl })
+end
+
 EOF
 """"""""""""""""" End LUA LSP """"""""""""
+" Java setup
+augroup lsp
+    au!
+    au FileType java lua require'jdtls_setup'.setup()
+    "au!
+    "au FileType java lua require('jdtls').start_or_attach({cmd = {'/Users/ogarces/Documents/dotfiles/.dotfiles/vim/java-lsp.sh'}})
+augroup end
+
+" Java syntastic checkstyle
+let g:syntastic_java_checkers = ['checkstyle']
+let g:syntastic_java_checkstyle_classpath = '/Users/ogarces/dev/checkstyle/checkstyle-8.45.1-all.jar'
+let g:syntastic_java_checkstyle_conf_file = './.code_quality/checkstyle_rules.xml'
+let g:syntastic_loc_list_height = 5
+let g:syntastic_check_on_open = 0
+let g:syntastic_auto_loc_list = 1
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+let g:syntastic_mode_map = { 'mode': 'passive', 'active_filetypes': [],'passive_filetypes': [] }
+nnoremap <C-c>E :SyntasticCheck<CR>
+nnoremap <C-c>q :lclose<CR>
+let g:syntastic_error_symbol = '❌'
+let g:syntastic_style_error_symbol = '🚧'
+let g:syntastic_warning_symbol = '⚠️'
+let g:syntastic_style_warning_symbol = '⚠️'
+
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+
+" Setup for JDTLS for the code actions
+nnoremap <silent> <F12> <Cmd>lua require('jdtls').code_action()<CR>
+vnoremap <silent> <F12> <Esc><Cmd>lua require('jdtls').code_action(true)<CR>
 
 " Git Gutter Options
 set updatetime=100
 
+" Compe Configuration
+let g:compe = {}
+let g:compe.enabled = v:true
+let g:compe.autocomplete = v:true
+let g:compe.debug = v:false
+let g:compe.min_length = 1
+let g:compe.preselect = 'enable'
+let g:compe.throttle_time = 80
+let g:compe.source_timeout = 200
+let g:compe.resolve_timeout = 800
+let g:compe.incomplete_delay = 400
+let g:compe.max_abbr_width = 100
+let g:compe.max_kind_width = 100
+let g:compe.max_menu_width = 100
+let g:compe.documentation = v:true
+
+let g:compe.source = {}
+let g:compe.source.path = v:true
+let g:compe.source.buffer = v:true
+let g:compe.source.calc = v:true
+let g:compe.source.nvim_lsp = v:true
+let g:compe.source.nvim_lua = v:true
+let g:compe.source.vsnip = v:true
+let g:compe.source.ultisnips = v:true
+let g:compe.source.luasnip = v:true
+let g:compe.source.emoji = v:true
+set completeopt=menuone,noselect
 
 
 "CoC mapping
@@ -179,7 +298,6 @@ function! ClearRegFunction()
     endfor
 endfunction
 
-"Change insert mode cursor
 let &t_SI.="\e[5 q" "SI = INSERT mode
 let &t_SR.="\e[4 q" "SR = REPLACE mode
 let &t_EI.="\e[1 q" "EI = NORMAL mode (ELSE)"
