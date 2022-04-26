@@ -73,6 +73,13 @@ window:
   # Set this to `None` to use the default theme variant.
   #gtk_theme_variant: None
 
+  # Background opacity
+  #
+  # Window opacity as a floating point number from `0.0` to `1.0`.
+  # The value `0.0` is completely transparent and `1.0` is opaque.
+  # window.opacity: 0.85
+  opacity: 0.85
+
 scrolling:
   # Maximum number of lines in the scrollback buffer.
   # Specifying '0' will disable scrolling.
@@ -313,13 +320,6 @@ colors:
 #  duration: 0
 #  color: '0xffffff'
 
-# Background opacity
-#
-# Window opacity as a floating point number from `0.0` to `1.0`.
-# The value `0.0` is completely transparent and `1.0` is opaque.
-# background_opacity: 1.0
-background_opacity: 0.85
-
 #selection:
   #semantic_escape_chars: ",│`|:\"' ()[]{}<>\t"
 
@@ -354,8 +354,8 @@ background_opacity: 0.85
 #   - (macOS) /bin/bash --login
 #   - (Linux/BSD) user login shell
 #   - (Windows) powershell
-#shell:
-#  program: /bin/bash
+shell:
+  program: /bin/zsh
 #  args:
 #    - --login
 
