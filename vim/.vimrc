@@ -7,23 +7,38 @@ set nobackup
 set noerrorbells
 set noswapfile
 set nowrap
-set nu
+set number
+set relativenumber
+set smartcase
+set smartindent
+
 " Old settings
 " set shiftwidth=4
 " set tabstop=4 softtabstop=4 expandtab
 " Java and Typescript Settings
 set shiftwidth=2
 set tabstop=2 softtabstop=2 expandtab
-set smartcase
-set smartindent
-set undodir=/Users/ogarces/.vim/undodir
-set undofile
-set relativenumber
-set cursorline
 
+set undofile
+set cursorline
+set noshowmode                            " dont show current mode below statusline
+set undodir=~/.config/nvim/undodir        " Undo Dir folder
+
+" performance tweaks
+set scrolljump=10                          " Allows to jump 20 lines while scrolling
+set lazyredraw
+set redrawtime=10000
+set synmaxcol=180
+set re=1
+
+" auto-install vim-plug
+if empty(glob('~/.config/nvim/autoload/plug.vim'))
+  silent !curl -fLo ~/.config/nvim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall | source $MYVIMRC
+endif
 
 "Initialize plug calls settings
-call plug#begin('~/.vim/plugged')
+call plug#begin('~/.config/nvim/plugged')
 "Plug 'neoclide/coc.nvim'
 "Plug 'morhetz/gruvbox'
 Plug 'gruvbox-community/gruvbox'
@@ -34,7 +49,6 @@ Plug 'mbbill/undotree'
 Plug 'itchyny/lightline.vim'
 Plug 'airblade/vim-gitgutter'
 
-" Just testing
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'mhartington/formatter.nvim'
 Plug 'nvim-treesitter/playground'
@@ -59,44 +73,6 @@ let g:netrw_browse_split = 2 "Open in a new vertical split
 let g:netrw_liststyle = 3 "Open in tree view
 let g:netrw_banner = 0 "Remove netrw banner
 
-""" This is the config for lightline color scheme based on Wombat
-let s:base03 = [ '#242424', 235 ]
-let s:base023 = [ '#353535', 236 ]
-let s:base02 = [ '#444444', 238 ]
-let s:base01 = [ '#585858', 240 ]
-let s:base00 = [ '#666666', 242  ]
-let s:base0 = [ '#808080', 244 ]
-let s:base1 = [ '#969696', 247 ]
-let s:base2 = [ '#a8a8a8', 248 ]
-let s:base3 = [ '#d0d0d0', 252 ]
-let s:yellow = [ '#cae682', 180 ]
-let s:orange = [ '#e5786d', 173 ]
-let s:red = [ '#e5786d', 203 ]
-let s:magenta = [ '#f2c68a', 216 ]
-let s:blue = [ '#8ac6f2', 117 ]
-let s:dark_blue = ['5f87af', 67]
-let s:cyan = s:blue
-let s:green = [ '#87d700', 112 ]
-let s:p = {'normal': {}, 'inactive': {}, 'insert': {}, 'replace': {}, 'visual': {}, 'tabline': {}}
-let s:p.normal.left = [ [ s:base02, s:blue ], [ s:base3, s:base01 ] ]
-let s:p.normal.right = [ [ s:base02, s:base0 ], [ s:base1, s:base01 ] ]
-" [ [ <font color>, <background> ] ] "
-let s:p.inactive.right = [ [ s:base02, s:dark_blue ], [ s:base02, s:dark_blue ] ]
-let s:p.inactive.left =  [ [ s:base1, s:base02 ], [ s:base00, s:base023 ] ]
-let s:p.insert.left = [ [ s:base02, s:green, 'bold' ], [ s:base3, s:base01 ] ]
-let s:p.replace.left = [ [ s:base023, s:red ], [ s:base3, s:base01 ] ]
-let s:p.visual.left = [ [ s:base02, s:magenta ], [ s:base3, s:base01 ] ]
-let s:p.normal.middle = [ [ s:base2, s:base02 ] ]
-let s:p.inactive.middle = [ [ s:base1, s:base023 ] ]
-let s:p.tabline.left = [ [ s:base3, s:base00 ] ]
-let s:p.tabline.tabsel = [ [ s:base3, s:base03 ] ]
-let s:p.tabline.middle = [ [ s:base2, s:base02 ] ]
-let s:p.tabline.right = [ [ s:base2, s:base00 ] ]
-let s:p.normal.error = [ [ s:base03, s:red ] ]
-let s:p.normal.warning = [ [ s:base023, s:yellow ] ]
-let g:lightline#colorscheme#wombat#palette = lightline#colorscheme#flatten(s:p)
-let g:lightline = { 'colorscheme': 'wombat'}
-
 nnoremap <leader>h :wincmd h<CR>
 nnoremap <leader>j :wincmd j<CR>
 nnoremap <leader>k :wincmd k<CR>
@@ -116,10 +92,6 @@ nnoremap <Leader>swt :split <bar> :vsplit <bar> :wincmd j <bar> :split <bar> :te
 "Split and have a terminal in bottom position
 nnoremap <Leader>swT <bar> :tabnew <CR>
 
-"FZF plugin
-"nnoremap <C-p> :GFiles  --cached --exclude-standard --others<CR>
-"let g:fzf_layout = { 'window': { 'width': 0.8, 'height': 0.8 } }
-
 " Telescope remaps
 nnoremap <C-p> <cmd>Telescope find_files<cr>
 nnoremap <C-g> <cmd>Telescope live_grep<cr>
@@ -129,6 +101,11 @@ nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 "  LSP builtin
 lua << EOF
 local nvim_lsp = require('lspconfig')
+-- Lightline color scheme
+require('lightline_color_theme')
+
+-- Compe Configuration
+require('compe_settings')
 
 -- Use an on_attach function to only map the following keys
 -- after the language server attaches to the current buffer
@@ -250,53 +227,11 @@ vnoremap <silent> <F12> <Esc><Cmd>lua require('jdtls').code_action(true)<CR>
 " Git Gutter Options
 set updatetime=100
 
-" Compe Configuration
-let g:compe = {}
-let g:compe.enabled = v:true
-let g:compe.autocomplete = v:true
-let g:compe.debug = v:false
-let g:compe.min_length = 1
-let g:compe.preselect = 'enable'
-let g:compe.throttle_time = 80
-let g:compe.source_timeout = 200
-let g:compe.resolve_timeout = 800
-let g:compe.incomplete_delay = 400
-let g:compe.max_abbr_width = 100
-let g:compe.max_kind_width = 100
-let g:compe.max_menu_width = 100
-let g:compe.documentation = v:true
-
-let g:compe.source = {}
-let g:compe.source.path = v:true
-let g:compe.source.buffer = v:true
-let g:compe.source.calc = v:true
-let g:compe.source.nvim_lsp = v:true
-let g:compe.source.nvim_lua = v:true
-let g:compe.source.vsnip = v:true
-let g:compe.source.ultisnips = v:true
-let g:compe.source.luasnip = v:true
-let g:compe.source.emoji = v:true
-set completeopt=menuone,noselect
-
-
-"CoC mapping
-"nmap <leader>gd <Plug>(coc-definition)
-"nmap <silent>gy <Plug>(coc-type-definition)
-"nmap <leader>gi <Plug>(coc-implementation)
-"nmap <leader>gr <Plug>(coc-references)
-"nmap <leader>gr <Plug>(coc-references)
-
 "Terminal mapping 
 tnoremap <c-\><c-\> <c-\><c-n>
 
 "Custom functions
-command! ClearReg :call ClearRegFunction()
-function! ClearRegFunction()
-    let regs=split('abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789*+/-"', '\zs')
-    for r in regs
-      call setreg(r, [])
-    endfor
-endfunction
+command! ClearReg :lua require('custom_functions').clear_registry_function()
 
 let &t_SI.="\e[5 q" "SI = INSERT mode
 let &t_SR.="\e[4 q" "SR = REPLACE mode
