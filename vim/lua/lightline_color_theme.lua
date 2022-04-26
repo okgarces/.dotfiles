@@ -46,6 +46,3 @@ p.normal.warning = { { base023, yellow } }
 
 vim.g['lightline#colorscheme#wombat#palette'] = vim.fn['lightline#colorscheme#flatten'](p)
 vim.g['lightline'] = { colorscheme = 'wombat'}
-print "--- Finishing color theme wombat ---"
-
-return {} 
