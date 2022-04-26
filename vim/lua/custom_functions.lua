@@ -6,5 +6,4 @@ local M = {
     end
   end
 }
-M.clear_registry_function()
 return M
