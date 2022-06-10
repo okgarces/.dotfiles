@@ -29,7 +29,7 @@ set scrolljump=10                          " Allows to jump 20 lines while scrol
 set lazyredraw
 set redrawtime=10000
 set synmaxcol=180
-set re=1
+set re=0                                   " This is to avoid slow highlight files 
 
 " auto-install vim-plug
 if empty(glob('~/.config/nvim/autoload/plug.vim'))
