@@ -1,7 +1,8 @@
 configuration {
  modi: "window,drun,ssh,combi";
  font: "JetBrains mono 12";
- combi-modi: "window,drun,ssh";
+ combi-modi: [window,drun,ssh];
+ show-icons: true;
  }
 @theme "~/.config/rofi/themes/dt-center.rasi"
 

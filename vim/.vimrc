@@ -42,6 +42,7 @@ call plug#begin('~/.config/nvim/plugged')
 "Plug 'neoclide/coc.nvim'
 "Plug 'morhetz/gruvbox'
 Plug 'gruvbox-community/gruvbox'
+Plug 'EdenEast/nightfox.nvim'
 "Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 "Plug 'junegunn/fzf.vim'
 Plug 'mbbill/undotree'
@@ -62,9 +63,12 @@ Plug 'mfussenegger/nvim-jdtls'
 Plug 'vim-syntastic/syntastic'
 call plug#end()
 
-colorscheme gruvbox
+colorscheme duskfox
+" colorscheme gruvbox
 set background=dark
 highlight Normal ctermbg=256
+
+
 
 let mapleader = " "
 let g:ctrlp_use_caching = 0
@@ -73,10 +77,10 @@ let g:netrw_browse_split = 2 "Open in a new vertical split
 let g:netrw_liststyle = 3 "Open in tree view
 let g:netrw_banner = 0 "Remove netrw banner
 
-nnoremap <leader>h :wincmd h<CR>
-nnoremap <leader>j :wincmd j<CR>
-nnoremap <leader>k :wincmd k<CR>
-nnoremap <leader>l :wincmd l<CR>
+nnoremap <leader>wh :wincmd h<CR>
+nnoremap <leader>wj :wincmd j<CR>
+nnoremap <leader>wk :wincmd k<CR>
+nnoremap <leader>wl :wincmd l<CR>
 nnoremap <leader>u :UndotreeShow<CR>
 nnoremap <leader>pv :wincmd v<bar> :Ex <bar> :vertical resize 30<CR>
 nnoremap <Leader>rp :resize 100<CR>
