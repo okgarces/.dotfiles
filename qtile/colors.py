@@ -24,7 +24,7 @@ colors_v2 = [
         ['#FFFFFF', '#FFFFFF']  # WHITE FOR TEXT
 ]
 
-other_window_active_color_line = '#98be65'
-current_window_active_color_line = '#51afef'
+other_window_active_color_line = '#98BE65'
+current_window_active_color_line = '#51AFEF'
 
 colors = colors_v2

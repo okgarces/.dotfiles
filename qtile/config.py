@@ -17,6 +17,7 @@ mod = 'mod4'              # Sets mod key to SUPER/WINDOWS
 myTerm = 'alacritty'      # My terminal of choice
 myBrowser = 'vivaldi' # My browser of choice
 
+
 # Allow MODKEY+[0 through 9] to bind to groups, see https://docs.qtile.org/en/stable/manual/config/groups.html
 # MOD4 + index Number : Switch to Group[index]
 # MOD4 + shift + index Number : Send active window to another Group
@@ -27,6 +28,7 @@ def simple_key_binder(mod, keynames=None):
         try:
             func(param)
         except KeyError:
+            logger.warning('Name Bloody Group', groups[0].name)
             logger.warning('Key not found in dgroup keys: "%s"', str(param))
 
     def func(dgroup):

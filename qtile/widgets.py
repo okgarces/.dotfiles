@@ -1,6 +1,12 @@
 import os
-from libqtile import layout, bar, widget, hook
+from libqtile import qtile
+from libqtile import widget
 from colors import colors, other_window_active_color_line, current_window_active_color_line
+from groups import groups
+
+mod = 'mod4'              # Sets mod key to SUPER/WINDOWS
+myTerm = 'alacritty'      # My terminal of choice
+myBrowser = 'vivaldi' # My browser of choice
 
 ##### Widget Settings #####
 widget_defaults = {
@@ -34,9 +40,9 @@ def init_widgets_list():
                        background = colors[0]
                        ),
               widget.GroupBox(
-                       font = 'JetBrains Mono Bold',
+                       font = 'JetBrains Mono Bold' if groups[0].name == '1::dev' else 'JetBrainsMonoExtraBold Nerd Font',
                        disable_drag = True,
-                       fontsize = 9,
+                       fontsize = 9 if groups[0].name == '1::dev' else 13,
                        margin_y = 3,
                        margin_x = 0,
                        padding_y = 5,
@@ -57,7 +63,6 @@ def init_widgets_list():
                        other_screen_border = other_window_active_color_line,
                        foreground = colors[2],
                        background = colors[0]
-
                        ),
              widget.TextBox(
                        text = '|',

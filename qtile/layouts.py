@@ -4,8 +4,10 @@ from colors import colors, current_window_active_color_line, other_window_active
 layout_theme = {
     "border_width": 2,
     "margin": 10,
-    "border_focus": "E1ACFF",
-    "border_normal": "1D2330",
+    # "border_focus": "#E1ACFF",
+    # "border_normal": "#1D2330",
+    "border_normal": colors[0],
+    "border_focus": colors[8]
     }
 
 layouts = [

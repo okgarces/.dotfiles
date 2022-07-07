@@ -68,8 +68,6 @@ colorscheme duskfox
 set background=dark
 highlight Normal ctermbg=256
 
-
-
 let mapleader = " "
 let g:ctrlp_use_caching = 0
 
