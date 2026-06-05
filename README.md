@@ -13,4 +13,7 @@ DotFiles for development purposses
 - Clone the typewritten `https://github.com/reobin/typewritten.git`
 
 # Aerospace
-- `ln -s <...> ~/.aerospace.toml`
+-`ln -s <...> ~/.aerospace.toml`
+
+# Ghostty
+- `ln -s .dotfiles/config.ghostty $HOME/Library/Application\ Support/com.mitchellh.ghostty`

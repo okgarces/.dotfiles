@@ -1,0 +1,10 @@
+window-padding-x = 10
+window-padding-y = 10
+
+macos-icon = custom
+macos-custom-icon = /Applications/Ghostty.app/Contents/Resources/ghostty-cute-by-day.icns
+
+macos-titlebar-proxy-icon = visible
+
+background = 282c34
+foreground = ffffff
